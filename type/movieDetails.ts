@@ -30,7 +30,7 @@ interface MovieDetails {
         iso_3166_1: string;
         name: string;
     }[];
-    release_date: string;
+    release_date: Date;
     revenue: number;
     runtime: number | null;
     spoken_languages: {

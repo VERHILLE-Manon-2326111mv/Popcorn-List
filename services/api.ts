@@ -9,7 +9,7 @@ export const TMDB_CONFIG = {
 
 export const fetchMovieDetail = async (movieId: string): Promise<MovieDetails> => {
     try {
-        const response = await fetch(`${TMDB_CONFIG.BASE_URL}/movie/${movieId}?api_key=${TMDB_CONFIG.API_KEY}`, {
+        const response = await fetch(`${TMDB_CONFIG.BASE_URL}/movie/${movieId}?api_key=${TMDB_CONFIG.API_KEY}&language=fr-FR`, {
                 method: "GET",
                 headers: TMDB_CONFIG.headers,
             }

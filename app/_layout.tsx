@@ -22,11 +22,11 @@ export default function Layout() {
                     ),
                 }}
             />
-            {/* Cacher la page movie/[id] de la barre de navigation */}
             <Tabs.Screen
                 name="movie/[id]"
                 options={{
-                    href: null, // ✅ Cache l'écran des onglets
+                    href: null,
+                    headerShown: false,
                 }}
             />
         </Tabs>
