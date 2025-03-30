@@ -1,11 +1,16 @@
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, TouchableOpacity } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
 
 const ProfileScreen = () => {
+    const navigation = useNavigation();
+
     return (
         <View>
-            <Text>🎥 Mes films vus</Text>
-            <Text>📌 Watchlist</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('PersonalMovies')}>
+                <Text>🎥 Mes films vus</Text>
+                <Text>📌 Watchlist</Text>
+            </TouchableOpacity>
             <Text>📊 Stats</Text>
         </View>
     );
