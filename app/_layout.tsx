@@ -8,6 +8,7 @@ export default function Layout() {
                 name="index"
                 options={{
                     title: "Accueil",
+                    headerShown : false,
                     tabBarIcon: ({ color, size }) => (
                         <Ionicons name="home" color={color} size={size} />
                     ),
@@ -16,6 +17,7 @@ export default function Layout() {
             <Tabs.Screen
                 name="profileScreen"
                 options={{
+                    headerShown : false,
                     title: "Profil",
                     tabBarIcon: ({ color, size }) => (
                         <Ionicons name="person" color={color} size={size} />
