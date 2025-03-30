@@ -9,13 +9,15 @@ import {
     TextStyle,
     ImageStyle
 } from "react-native";
-import React from "react";
+import React, {useContext} from "react";
 import { useLocalSearchParams } from "expo-router";
 import useFetch from "@/services/useFetch";
 import { fetchMovieDetail } from "@/services/api";
+import {useTodoContext} from "@/context/TodoContext";
 
 const MovieDetails = () => {
     const { id } = useLocalSearchParams();
+    const { watchList, setWatchList, wishList, setWishList } = useTodoContext();
 
     if (!id) {
         return <Text>❌ Erreur : Aucun identifiant de film trouvé</Text>;
@@ -25,6 +27,35 @@ const MovieDetails = () => {
 
     if (loading) return <ActivityIndicator size="large" color="blue" />;
     if (error) return <Text>❌ Erreur : {error.message}</Text>;
+
+    const handleAddToWishList = () => {
+        if (movie) {
+            if (wishList.length === 0) {
+                setWishList([movie]);
+            } else if (wishList.some(wishListMovie => wishListMovie.id === movie.id)) {
+                setWishList(wishList.filter(wishListMovie => wishListMovie.id !== movie.id));
+            } else {
+                setWishList([...wishList, movie]);
+            }
+        }
+        console.log(movie)
+    };
+
+    const handleAddToWatchList = () => {
+        if (movie) {
+            if (watchList.length === 0) {
+                setWatchList([movie]);
+            } else if (watchList.some(watchListMovie => watchListMovie.id === movie.id)) {
+                setWatchList(watchList.filter(watchListMovie => watchListMovie.id !== movie.id));
+            } else {
+                setWatchList([...watchList, movie]);
+            }
+        }
+        console.log(movie)
+
+    };
+
+
 
     return (
         <ScrollView style={styles.container}>
@@ -53,8 +84,8 @@ const MovieDetails = () => {
 
             <View style={styles.actions}>
                 <Button title="⭐ Noter" onPress={() => console.log("Noter le film")} />
-                <Button title="📌 Ajouter à la Watchlist" onPress={() => console.log("Ajout Watchlist")} />
-                <Button title="✅ Marquer comme vu" onPress={() => console.log("Marquer Vu")} />
+                <Button title="📌 Ajouter à la wishList" onPress={handleAddToWishList} />
+                <Button title="✅ Marquer comme vu" onPress={handleAddToWatchList} />
             </View>
         </ScrollView>
     );
