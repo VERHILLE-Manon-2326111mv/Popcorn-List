@@ -9,6 +9,9 @@ import {
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import data_profile from '@/data_profile.json';
+
+console.log(data_profile);
 
 import useFetch from "@/services/useFetch";
 import { fetchMovieDetail } from "@/services/api";
@@ -55,8 +58,12 @@ const Details = () => {
         if (movie) {
             if (isInWishList) {
                 setWishList(wishList.filter(wishListMovie => wishListMovie.id !== movie.id));
+                data_profile.movies_wishlist_id.filter(wishListJSON => wishListJSON.id !== movie.id);
+                data_profile.total_wishlist -= 1;
             } else {
                 setWishList([...wishList, movie]);
+                data_profile.movies_wishlist_id.push(movie.id);
+                data_profile.total_wishlist += 1;
             }
         }
         console.log(movie)
@@ -66,8 +73,12 @@ const Details = () => {
         if (movie) {
             if (isInWatchList) {
                 setWatchList(watchList.filter(watchListMovie => watchListMovie.id !== movie.id));
+                data_profile.movies_viewed_id.filter(watchListJSON => watchListJSON.id !== movie.id);
+                data_profile.total_viewed -= 1;
             } else {
                 setWatchList([...watchList, movie]);
+                data_profile.movies_viewed_id.push(movie.id);
+                data_profile.total_viewed += 1;
             }
         }
         console.log(movie)

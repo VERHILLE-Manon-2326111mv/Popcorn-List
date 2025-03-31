@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import {View, Button, Text, StyleSheet, FlatList, TextStyle} from 'react-native';
 import { useMovieContext } from '@/context/MovieContext';
 import MovieCard from '@/components/MovieCard';
+import data_profile from '@/data_profile.json';
+console.log(data_profile);
 
 const PersonalMovies = () => {
     const { watchList, wishList } = useMovieContext();
@@ -29,6 +31,15 @@ const PersonalMovies = () => {
                         currentList.length == 0 ? "0 min" : currentList.reduce((sum, item) => sum + item.runtime, 0) + " min"
                     }</Text>
             };
+            {
+                showWatchList ? <Text style={styles.numberText}>Durée moyenne films vues : {
+                        currentList.length == 0 ? "0 min" : (currentList.reduce((sum, item) => sum + item.runtime, 0))/currentList.length + " min"
+                    }</Text> :
+                    <Text style={styles.numberText}>Durée moyenne films à regarder : {
+                        currentList.length == 0 ? "0 min" : (currentList.reduce((sum, item) => sum + item.runtime, 0))/currentList.length + " min"
+                    }</Text>
+            };
+
             <FlatList
                 data={currentList}
                 renderItem={({ item }) => <MovieCard {...item} />}
