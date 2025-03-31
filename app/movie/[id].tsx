@@ -1,38 +1,44 @@
 import {
     View,
     Text,
-    ActivityIndicator,
     Image,
-    StyleSheet,
+    ActivityIndicator,
     ScrollView,
-    Button,
-    TextStyle,
-    ImageStyle
+    TouchableOpacity,
+    StyleSheet,
 } from "react-native";
-import React, {useContext} from "react";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { SafeAreaView } from "react-native-safe-area-context";
+
 import useFetch from "@/services/useFetch";
 import { fetchMovieDetail } from "@/services/api";
-import {useTodoContext} from "@/context/TodoContext";
 
-const MovieDetails = () => {
-    const { id } = useLocalSearchParams();
+import { useTodoContext } from "@/context/TodoContext";
+
+const MovieInfo = ({ label, value }: MovieInfoProps) => (
+    <View style={styles.movieInfoContainer}>
+        <Text style={styles.movieInfoLabel}>{label}</Text>
+        <Text style={styles.movieInfoValue}>
+            {value || "N/A"}
+        </Text>
+    </View>
+);
+
+const Details = () => {
     const { watchList, setWatchList, wishList, setWishList } = useTodoContext();
+    const router = useRouter();
+    const { id } = useLocalSearchParams();
+    console.log(id);
+    const { data: movie, loading } = useFetch(() =>
+        fetchMovieDetail(id as string), [id]
+    );
 
-    if (!id) {
-        return <Text>❌ Erreur : Aucun identifiant de film trouvé</Text>;
-    }
-
-    const { data: movie, loading, error } = useFetch(() => fetchMovieDetail(id as string));
-
-    if (loading) return <ActivityIndicator size="large" color="blue" />;
-    if (error) return <Text>❌ Erreur : {error.message}</Text>;
+    const isInWishList = wishList.some(wishListMovie => wishListMovie.id === movie?.id);
+    const isInWatchList = watchList.some(watchListMovie => watchListMovie.id === movie?.id);
 
     const handleAddToWishList = () => {
         if (movie) {
-            if (wishList.length === 0) {
-                setWishList([movie]);
-            } else if (wishList.some(wishListMovie => wishListMovie.id === movie.id)) {
+            if (isInWishList) {
                 setWishList(wishList.filter(wishListMovie => wishListMovie.id !== movie.id));
             } else {
                 setWishList([...wishList, movie]);
@@ -43,100 +49,215 @@ const MovieDetails = () => {
 
     const handleAddToWatchList = () => {
         if (movie) {
-            if (watchList.length === 0) {
-                setWatchList([movie]);
-            } else if (watchList.some(watchListMovie => watchListMovie.id === movie.id)) {
+            if (isInWatchList) {
                 setWatchList(watchList.filter(watchListMovie => watchListMovie.id !== movie.id));
             } else {
                 setWatchList([...watchList, movie]);
             }
         }
         console.log(movie)
-
     };
 
-
+    if (loading)
+        return (
+            <SafeAreaView style={styles.safeArea}>
+                <ActivityIndicator />
+            </SafeAreaView>
+        );
 
     return (
-        <ScrollView style={styles.container}>
-            {/* Affiche du film */}
-            {movie?.poster_path && (
-                <Image
-                    source={{ uri: `https://image.tmdb.org/t/p/w500${movie.poster_path}` }}
-                    style={styles.poster}
-                />
-            )}
+        <View style={styles.container}>
+            <ScrollView contentContainerStyle={styles.scrollViewContent}>
+                <View>
+                    <Image
+                        source={{
+                            uri: `https://image.tmdb.org/t/p/w500${movie?.poster_path}`,
+                        }}
+                        style={styles.posterImage}
+                        resizeMode="stretch"
+                    />
+                </View>
 
+                <View style={styles.movieDetailsContainer}>
+                    <Text style={styles.movieTitle}>{movie?.title}</Text>
 
-            <Text style={styles.title}>
-                {movie?.title} ({new Date(movie?.release_date).getFullYear()})
-            </Text>
+                    <View style={styles.movieRuntimeContainer}>
+                        <Text style={styles.movieRuntimeText}></Text>
+                        <Text style={styles.movieRuntimeText}>{movie?.runtime}m</Text>
+                    </View>
 
-            <Text style={styles.rating}>⭐ {movie?.vote_average.toFixed(1)} / 10</Text>
+                    <View style={styles.movieRatingContainer}>
+                        <Text style={styles.movieRatingText}>
+                            {Math.round(movie?.vote_average ?? 0)}/10
+                        </Text>
+                        <Text style={styles.movieVoteCountText}>
+                            ({movie?.vote_count} votes)
+                        </Text>
+                    </View>
 
-            <Text style={styles.genres}>
-                {movie?.genres.map((genre) => genre.name).join(", ")}
-            </Text>
+                    <MovieInfo label="Overview" value={movie?.overview} />
+                    <MovieInfo
+                        label="Genres"
+                        value={movie?.genres?.map((g) => g.name).join(" • ") || "N/A"}
+                    />
 
-            <Text style={styles.duration}>⏳ {movie?.runtime} min</Text>
+                    <View style={styles.movieBudgetRevenueContainer}>
+                        <MovieInfo
+                            label="Budget"
+                            value={`$${(movie?.budget ?? 0) / 1_000_000} million`}
+                        />
+                        <MovieInfo
+                            label="Revenue"
+                            value={`$${Math.round(
+                                (movie?.revenue ?? 0) / 1_000_000
+                            )} million`}
+                        />
+                    </View>
 
-            <Text style={styles.overview}>{movie?.overview || "Résumé non disponible en français."}</Text>
+                    <MovieInfo
+                        label="Production Companies"
+                        value={
+                            movie?.production_companies?.map((c) => c.name).join(" • ") ||
+                            "N/A"
+                        }
+                    />
+                </View>
+            </ScrollView>
 
-            <View style={styles.actions}>
-                <Button title="⭐ Noter" onPress={() => console.log("Noter le film")} />
-                <Button title="📌 Ajouter à la wishList" onPress={handleAddToWishList} />
-                <Button title="✅ Marquer comme vu" onPress={handleAddToWatchList} />
+            <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.actionButton} onPress={handleAddToWishList}>
+                    <Text style={styles.buttonText}>{isInWishList ? "❤️" : "🖤"}</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.actionButton} onPress={handleAddToWatchList}>
+                    <Text style={styles.buttonText}>{isInWatchList ? "✔️" : "❌"}</Text>
+                </TouchableOpacity>
             </View>
-        </ScrollView>
+
+            <TouchableOpacity
+                style={styles.goBackButton}
+                onPress={router.back}
+            >
+
+                <Text style={styles.goBackText}>Go Back</Text>
+            </TouchableOpacity>
+        </View>
     );
 };
 
-export default MovieDetails;
-
 const styles = StyleSheet.create({
-    container: {
+    safeArea: {
+        backgroundColor: '#121212',
         flex: 1,
-        padding: 16,
-        backgroundColor: "#121212",
-    } as TextStyle,
-    poster: {
-        width: "100%",
-        height: 400,
-        borderRadius: 10,
-        marginBottom: 16,
-    } as ImageStyle,
-    title: {
+    },
+    container: {
+        backgroundColor: '#121212',
+        flex: 1,
+    },
+    scrollViewContent: {
+        paddingBottom: 80,
+    },
+    posterImage: {
+        width: '100%',
+        height: 550,
+    },
+    movieDetailsContainer: {
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        marginTop: 20,
+        paddingHorizontal: 20,
+    },
+    movieTitle: {
+        color: 'white',
+        fontWeight: 'bold',
         fontSize: 24,
-        fontWeight: "bold",
-        color: "#fff",
-        textAlign: "center",
-    } as TextStyle,
-    rating: {
-        fontSize: 18,
-        color: "#ffcc00",
-        textAlign: "center",
-        marginVertical: 4,
-    } as TextStyle,
-    genres: {
-        fontSize: 16,
-        color: "#bbb",
-        textAlign: "center",
-    }  as TextStyle,
-    duration: {
-        fontSize: 16,
-        color: "#bbb",
-        textAlign: "center",
-        marginVertical: 4,
-    } as TextStyle,
-    overview: {
+    },
+    movieRuntimeContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 4,
+        marginTop: 8,
+    },
+    movieRuntimeText: {
+        color: '#B0B0B0',
         fontSize: 14,
-        color: "#ddd",
-        textAlign: "justify",
-        marginTop: 12,
-    } as TextStyle,
-    actions: {
-        flexDirection: "column",
+    },
+    movieRatingContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#1E1E1E',
+        paddingHorizontal: 8,
+        paddingVertical: 4,
+        borderRadius: 8,
+        gap: 4,
+        marginTop: 8,
+    },
+    movieRatingText: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 14,
+    },
+    movieVoteCountText: {
+        color: '#B0B0B0',
+        fontSize: 14,
+    },
+    movieInfoContainer: {
+        flexDirection: 'column',
+        alignItems: 'flex-start',
+        justifyContent: 'center',
+        marginTop: 20,
+    },
+    movieInfoLabel: {
+        color: '#B0B0B0',
+        fontSize: 14,
+    },
+    movieInfoValue: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 14,
+        marginTop: 8,
+    },
+    movieBudgetRevenueContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        width: '50%',
+    },
+    buttonContainer: {
+        position: 'absolute',
+        bottom: 20,
+        right: 20,
+        flexDirection: 'row',
         gap: 10,
-        marginTop: 16,
-    } as TextStyle,
+    },
+    actionButton: {
+        backgroundColor: '#FF6347',
+        borderRadius: 50,
+        padding: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 16,
+    },
+    goBackButton: {
+        position: 'absolute',
+        bottom: 20,
+        left: 20,
+        backgroundColor: '#FF6347',
+        borderRadius: 50,
+        padding: 14,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        zIndex: 50,
+    },
+
+    goBackText: {
+        color: 'white',
+        fontWeight: '600',
+        fontSize: 16,
+    },
 });
+
+export default Details;
