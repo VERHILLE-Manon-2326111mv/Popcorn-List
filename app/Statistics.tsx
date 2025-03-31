@@ -4,7 +4,6 @@ const Statistics = () => {
     return (
         <View style={styles.container}>
             <Text style={styles.title}>Statistiques profil:</Text>
-            <Text style={styles.numberText}>Durée moyenne films regardées: </Text>
             <Text style={styles.numberText}>Note moyenne: </Text>
         </View>
     );
