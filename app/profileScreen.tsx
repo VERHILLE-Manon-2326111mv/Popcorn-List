@@ -11,7 +11,9 @@ const ProfileScreen = () => {
                 <Text>🎥 Mes films vus</Text>
                 <Text>📌 Watchlist</Text>
             </TouchableOpacity>
-            <Text>📊 Stats</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('Statistics')}>
+                <Text>📊 Stats</Text>
+            </TouchableOpacity>
         </View>
     );
 };

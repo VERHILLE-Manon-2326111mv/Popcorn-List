@@ -18,6 +18,17 @@ const PersonalMovies = () => {
         <View style={styles.container}>
             <Button title={`Switch to ${showWatchList ? 'WishList' : 'WatchList'}`} onPress={toggleList} />
             <Text style={styles.title}>{listTitle}</Text>
+            <Text style={styles.numberText}>
+                Nombre de films {showWatchList ? 'vues' : 'dans la liste de souhaits'}: {currentList.length}
+            </Text>
+            {
+                showWatchList ? <Text style={styles.numberText}>Durée total : {
+                        currentList.length == 0 ? "0 min" : currentList.reduce((sum, item) => sum + item.runtime, 0) + " min"
+                    }</Text> :
+                    <Text style={styles.numberText}>Durée total à regarder : {
+                        currentList.length == 0 ? "0 min" : currentList.reduce((sum, item) => sum + item.runtime, 0) + " min"
+                    }</Text>
+            };
             <FlatList
                 data={currentList}
                 renderItem={({ item }) => <MovieCard {...item} />}
@@ -35,6 +46,11 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#121212',
         padding: 10,
+    },
+    numberText: {
+        color: 'white',
+        marginTop: 10,
+        fontSize: 16,
     },
     title: {
         fontSize: 20,
