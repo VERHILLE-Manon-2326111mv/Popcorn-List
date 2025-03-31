@@ -1,39 +1,80 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import { Button, Text, View, ActivityIndicator, ScrollView, FlatList, StyleSheet } from "react-native";
-import { router } from "expo-router";
 import { fetchMovies } from "@/services/api";
 import useFetch from "@/services/useFetch";
 import MovieCard from "@/components/MovieCard";
+import SearchBar from '@/components/SearchBar';
 
 export default function Index() {
+    const [searchQuery, setSearchQuery] = useState("");
+    const [isInitialized, setIsInitialized] = useState(false);
+
     const {
-        data: movies,
-        loading: moviesLoading,
-        error: moviesError,
-    } = useFetch(() => fetchMovies({ query: "" }));
+        data: movies = [],
+        loading,
+        error,
+        refetch: loadMovies
+    } = useFetch(() => fetchMovies({ query: searchQuery }));
+
+    useEffect(() => {
+        const timeoutId = setTimeout(async () => {
+            if (searchQuery.trim()) {
+                await loadMovies();
+            } else {
+                loadMovies();
+            }
+        }, 750);
+
+        return () => clearTimeout(timeoutId);
+    }, [searchQuery]);
+
 
     return (
         <View style={styles.container}>
             <Text style={styles.headerText}>Bienvenue sur PopCornList 🍿</Text>
-            <Text style={styles.subHeaderText}>📌 Dernières sorties</Text>
-            <Text style={styles.subHeaderText}>🔍 Rechercher un film</Text>
 
             <ScrollView
                 style={styles.scrollView}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.scrollViewContent}
             >
-                {moviesLoading ? (
+                {loading ? (
                     <ActivityIndicator
                         size="large"
                         color="#0000ff"
                         style={styles.activityIndicator}
                     />
-                ) : moviesError ? (
-                    <Text>Error: {moviesError?.message}</Text>
+                ) : error ? (
+                    <Text>Error: {error?.message}</Text>
                 ) : (
                     <View style={styles.moviesContainer}>
-                        <Text style={styles.latestMoviesText}>Latest Movies</Text>
+                        <SearchBar
+                            placeholder="🔍 Rechercher un film"
+                            value={searchQuery}
+                            onChangeText={(text: string) => setSearchQuery(text)}
+                        />
+
+                        {loading && (
+                            <ActivityIndicator
+                                size="large"
+                                color="#0000FF"/>
+                        )}
+
+                        {error && (
+                            <Text>
+                                Error: {error ?? "Une erreur inconnue s'est produite"}
+                            </Text>
+                        )}
+
+                        {(!loading && !error && searchQuery.trim() && (movies ?? []).length > 0 && (
+                            <Text style={{color:"#FFFFFF"}}>
+                                Search Result for{' '}
+                                <Text>{searchQuery}</Text>
+                            </Text>
+                        )) || (
+                            <Text style={styles.latestMoviesText}>📌 Dernières sorties</Text>
+                        )}
+
                         <FlatList
                             data={movies}
                             renderItem={({ item }) => <MovieCard {...item} />}
@@ -99,5 +140,5 @@ const styles = StyleSheet.create({
         gap: 20,
         paddingRight: 5,
         marginBottom: 10,
-    },
+    }
 });
