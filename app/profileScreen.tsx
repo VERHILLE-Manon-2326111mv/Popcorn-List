@@ -40,7 +40,7 @@ const ProfileScreen = () => {
                 <Link href="/PersonalMovies" style={styles.menuItem}>
                     <Text style={styles.menuText}>📌 Watchlist</Text>
                 </Link>
-                <Link href="/Stats" style={styles.menuItem}>
+                <Link href="/Statistics" style={styles.menuItem}>
                     <Text style={styles.menuText}>📊 Stats</Text>
                 </Link>
             </View>
