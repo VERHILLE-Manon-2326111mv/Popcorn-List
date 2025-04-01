@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
         color: 'white',
         textAlign: 'center',
         marginVertical: 10,
-    },
+    } as TextStyle,
     flatList: {
         marginTop: 10,
     },

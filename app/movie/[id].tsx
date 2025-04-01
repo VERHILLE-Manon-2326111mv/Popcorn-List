@@ -5,7 +5,7 @@ import {
     ActivityIndicator,
     ScrollView,
     TouchableOpacity,
-    StyleSheet,
+    StyleSheet, TextStyle,
 } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -14,6 +14,9 @@ import useFetch from "@/services/useFetch";
 import { fetchMovieDetail } from "@/services/api";
 
 import { useTodoContext } from "@/context/TodoContext";
+import {useState} from "react";
+
+import ModalNotation from "@/components/ModalNotation";
 
 const MovieInfo = ({ label, value }: MovieInfoProps) => (
     <View style={styles.movieInfoContainer}>
@@ -24,14 +27,26 @@ const MovieInfo = ({ label, value }: MovieInfoProps) => (
     </View>
 );
 
+
 const Details = () => {
-    const { watchList, setWatchList, wishList, setWishList } = useTodoContext();
+    const [modalVisible, setModalVisible] = useState(false);
+    const [rating, setRating] = useState(-1);
+    const [comment, setComment] = useState("");
+    const { watchList, setWatchList, wishList, setWishList , ratingList, commentList} = useTodoContext();
     const router = useRouter();
     const { id } = useLocalSearchParams();
-    console.log(id);
     const { data: movie, loading } = useFetch(() =>
         fetchMovieDetail(id as string), [id]
     );
+
+    const handleRating = (ratingMovie: number, commentMovie: string, id: number) => {
+        if (rating == -1){
+            setRating(ratingMovie);
+        }
+        if (comment == ""){
+            setComment(commentMovie);
+        }
+    }
 
     const isInWishList = wishList.some(wishListMovie => wishListMovie.id === movie?.id);
     const isInWatchList = watchList.some(watchListMovie => watchListMovie.id === movie?.id);
@@ -44,7 +59,6 @@ const Details = () => {
                 setWishList([...wishList, movie]);
             }
         }
-        console.log(movie)
     };
 
     const handleAddToWatchList = () => {
@@ -55,8 +69,9 @@ const Details = () => {
                 setWatchList([...watchList, movie]);
             }
         }
-        console.log(movie)
     };
+
+
 
     if (loading)
         return (
@@ -93,9 +108,11 @@ const Details = () => {
                         <Text style={styles.movieVoteCountText}>
                             ({movie?.vote_count} votes)
                         </Text>
+
                     </View>
 
-                    <MovieInfo label="Overview" value={movie?.overview} />
+
+                    <MovieInfo label="Synopsie" value={movie?.overview} />
                     <MovieInfo
                         label="Genres"
                         value={movie?.genres?.map((g) => g.name).join(" • ") || "N/A"}
@@ -121,10 +138,29 @@ const Details = () => {
                             "N/A"
                         }
                     />
+
+                    {ratingList.some(r => r.id === movie?.id) && (
+                        <View style={styles.personalRatingContainer}>
+                            <Text style={styles.personalRatingText}>
+                                Votre note : {ratingList.find(r => r.id === movie?.id)?.rating} / 5
+                            </Text>
+                        </View>
+                    )}
+
+                    {commentList.some(c => c.id === movie?.id) && (
+                        <View style={styles.personalCommentContainer}>
+                            <Text style={styles.personalCommentText}>
+                                Votre commentaire : {commentList.find(c => c.id === movie?.id)?.comment}
+                            </Text>
+                        </View>
+                    )}
                 </View>
             </ScrollView>
 
             <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.rateButton} onPress={() => setModalVisible(true)}>
+                    <Text style={styles.buttonText}>⭐ Noter</Text>
+                </TouchableOpacity>
                 <TouchableOpacity style={styles.actionButton} onPress={handleAddToWishList}>
                     <Text style={styles.buttonText}>{isInWishList ? "❤️" : "🖤"}</Text>
                 </TouchableOpacity>
@@ -137,9 +173,16 @@ const Details = () => {
                 style={styles.goBackButton}
                 onPress={router.back}
             >
-
                 <Text style={styles.goBackText}>Go Back</Text>
             </TouchableOpacity>
+
+            <ModalNotation
+                visible={modalVisible}
+                onClose={() => setModalVisible(false)}
+                onSubmit={handleRating}
+                idMovie={movie?.id}
+            />
+
         </View>
     );
 };
@@ -239,7 +282,7 @@ const styles = StyleSheet.create({
     buttonText: {
         color: 'white',
         fontSize: 16,
-    },
+    } as TextStyle,
     goBackButton: {
         position: 'absolute',
         bottom: 20,
@@ -258,6 +301,36 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         fontSize: 16,
     },
+
+    rateButton: {
+        backgroundColor: '#FF6347',
+        borderRadius: 50,
+        padding: 20,
+        alignItems: 'center',
+        justifyContent: 'center',
+    }, personalRatingContainer: {
+        marginTop: 20,
+        padding: 10,
+        backgroundColor: '#1E1E1E',
+        borderRadius: 8,
+    },
+    personalRatingText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    personalCommentContainer: {
+        marginTop: 10,
+        padding: 10,
+        backgroundColor: '#1E1E1E',
+        borderRadius: 8,
+    },
+    personalCommentText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+    }
+
 });
 
 export default Details;

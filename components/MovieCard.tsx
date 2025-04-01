@@ -1,5 +1,5 @@
 import { Link } from "expo-router";
-import { Text, ImageBackground, TouchableOpacity, View, StyleSheet } from "react-native";
+import {Text, ImageBackground, TouchableOpacity, View, StyleSheet, TextStyle, ImageStyle} from "react-native";
 
 const MovieCard = ({
                        id,
@@ -15,7 +15,7 @@ const MovieCard = ({
 
     return (
         <Link href={`/movie/${id}`} asChild>
-            <TouchableOpacity style={styles.card} onPress={() => console.log(id)}>
+            <TouchableOpacity style={styles.card}>
                 <ImageBackground
                     source={{
                         uri: poster_path
@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
     card: {
         width: '30%',
         marginBottom: 10,
-    },
+    } as TextStyle,
     imageBackground: {
         width: '100%',
         height: 200,
@@ -63,18 +63,18 @@ const styles = StyleSheet.create({
     },
     image: {
         borderRadius: 10,
-    },
+    } as ImageStyle,
     overlay: {
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
         padding: 10,
         borderRadius: 10,
-    },
+    } as TextStyle,
     title: {
         fontSize: 14,
         fontWeight: 'bold',
         color: 'white',
         marginBottom: 5,
-    },
+    } as TextStyle,
     ratingContainer: {
         flexDirection: 'row',
         alignItems: 'center',
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
         textTransform: 'uppercase',
-    },
+    } as TextStyle,
     footer: {
         flexDirection: 'row',
         justifyContent: 'space-between',
@@ -95,13 +95,13 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: '#bbb',
         fontWeight: 'medium',
-    },
+    }   as TextStyle,
     movieLabel: {
         fontSize: 12,
         color: '#bbb',
         fontWeight: 'medium',
         textTransform: 'uppercase',
-    },
+    }   as TextStyle,
 });
 
 export default MovieCard;

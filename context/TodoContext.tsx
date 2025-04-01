@@ -12,9 +12,12 @@ const TodoContext = createContext<TodoContextProps | undefined>(undefined);
 export const TodoProvider = ({ children }: { children: ReactNode }) => {
     const [watchList, setWatchList] = useState<Movie[]>([]);
     const [wishList, setWishList] = useState<Movie[]>([]);
+    const [ratingList, setRatingList] = useState([]);
+    const [commentList, setCommentList] = useState([]);
+
 
     return (
-        <TodoContext.Provider value={{ watchList, setWatchList, wishList, setWishList }}>
+        <TodoContext.Provider value={{ watchList, setWatchList, wishList, setWishList , ratingList, setRatingList, commentList, setCommentList}}>
             {children}
         </TodoContext.Provider>
     );
