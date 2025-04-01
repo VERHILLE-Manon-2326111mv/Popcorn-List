@@ -21,24 +21,8 @@ const PersonalMovies = () => {
             <Button title={`Afficher la ${showWatchList ? 'liste de souhait' : 'liste de films vus'}`} onPress={toggleList} />
             <Text style={styles.title}>{listTitle}</Text>
             <Text style={styles.numberText}>
-                Nombre de films {showWatchList ? 'vues' : 'dans la liste de souhaits'}: {currentList.length}
+                Nombre de films {showWatchList ? 'vues' : 'dans la liste de souhaits'}: {currentList.length} films.
             </Text>
-            {
-                showWatchList ? <Text style={styles.numberText}>Durée total : {
-                        currentList.length == 0 ? "0 min" : currentList.reduce((sum, item) => sum + item.runtime, 0) + " min"
-                    }</Text> :
-                    <Text style={styles.numberText}>Durée total à regarder : {
-                        currentList.length == 0 ? "0 min" : currentList.reduce((sum, item) => sum + item.runtime, 0) + " min"
-                    }</Text>
-            };
-            {
-                showWatchList ? <Text style={styles.numberText}>Durée moyenne films vues : {
-                        currentList.length == 0 ? "0 min" : (currentList.reduce((sum, item) => sum + item.runtime, 0))/currentList.length + " min"
-                    }</Text> :
-                    <Text style={styles.numberText}>Durée moyenne films à regarder : {
-                        currentList.length == 0 ? "0 min" : (currentList.reduce((sum, item) => sum + item.runtime, 0))/currentList.length + " min"
-                    }</Text>
-            };
 
             <FlatList
                 data={currentList}
@@ -60,7 +44,7 @@ const styles = StyleSheet.create({
     },
     numberText: {
         color: 'white',
-        marginTop: 10,
+        marginTop: 12,
         fontSize: 16,
     },
     title: {
