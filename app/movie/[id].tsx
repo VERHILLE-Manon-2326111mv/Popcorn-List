@@ -13,7 +13,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import useFetch from "@/services/useFetch";
 import { fetchMovieDetail } from "@/services/api";
 
-import { useTodoContext } from "@/context/TodoContext";
+import { useMovieContext } from "@/context/MovieContext";
 
 const MovieInfo = ({ label, value }: MovieInfoProps) => (
     <View style={styles.movieInfoContainer}>
@@ -25,12 +25,12 @@ const MovieInfo = ({ label, value }: MovieInfoProps) => (
 );
 
 const Details = () => {
-    const { watchList, setWatchList, wishList, setWishList } = useTodoContext();
+    const { watchList, setWatchList, wishList, setWishList, language } = useMovieContext();
     const router = useRouter();
     const { id } = useLocalSearchParams();
     console.log(id);
     const { data: movie, loading } = useFetch(() =>
-        fetchMovieDetail(id as string), [id]
+        fetchMovieDetail(id as string, language), [id]
     );
 
     const isInWishList = wishList.some(wishListMovie => wishListMovie.id === movie?.id);
@@ -95,32 +95,31 @@ const Details = () => {
                         </Text>
                     </View>
 
-                    <MovieInfo label="Overview" value={movie?.overview} />
-                    <MovieInfo
-                        label="Genres"
-                        value={movie?.genres?.map((g) => g.name).join(" • ") || "N/A"}
-                    />
-
-                    <View style={styles.movieBudgetRevenueContainer}>
+                    <MovieInfo label="Desciption" value={movie?.overview} />
+                    {movie?.genres?.length > 0 && (
+                        <MovieInfo
+                            label="Genres"
+                            value={movie.genres.map((g : any) => g.name).join(" • ")}
+                        />
+                    )}
+                    {(movie?.budget ?? 0) > 0 && (
                         <MovieInfo
                             label="Budget"
-                            value={`$${(movie?.budget ?? 0) / 1_000_000} million`}
+                            value={`$${(movie.budget / 1_000_000).toFixed(1)} million`}
                         />
+                    )}
+                    {(movie?.revenue ?? 0) > 0 && (
                         <MovieInfo
                             label="Revenue"
-                            value={`$${Math.round(
-                                (movie?.revenue ?? 0) / 1_000_000
-                            )} million`}
+                            value={`$${(movie.revenue / 1_000_000).toFixed(1)} million`}
                         />
-                    </View>
-
-                    <MovieInfo
-                        label="Production Companies"
-                        value={
-                            movie?.production_companies?.map((c) => c.name).join(" • ") ||
-                            "N/A"
-                        }
-                    />
+                    )}
+                    {movie?.production_companies?.length > 0 && (
+                        <MovieInfo
+                            label="Companies de production"
+                            value={movie.production_companies.map((c : any) => c.name).join(" • ")}
+                        />
+                    )}
                 </View>
             </ScrollView>
 
@@ -129,7 +128,7 @@ const Details = () => {
                     <Text style={styles.buttonText}>{isInWishList ? "❤️" : "🖤"}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.actionButton} onPress={handleAddToWatchList}>
-                    <Text style={styles.buttonText}>{isInWatchList ? "✔️" : "❌"}</Text>
+                    <Text style={styles.buttonText}>{isInWatchList ? "👁" : "❌"}</Text>
                 </TouchableOpacity>
             </View>
 
@@ -138,7 +137,7 @@ const Details = () => {
                 onPress={router.back}
             >
 
-                <Text style={styles.goBackText}>Go Back</Text>
+                <Text style={styles.goBackIcon}>👈🏻</Text>
             </TouchableOpacity>
         </View>
     );
@@ -242,7 +241,7 @@ const styles = StyleSheet.create({
     },
     goBackButton: {
         position: 'absolute',
-        bottom: 20,
+        top: 20,
         left: 20,
         backgroundColor: '#FF6347',
         borderRadius: 50,
@@ -253,7 +252,7 @@ const styles = StyleSheet.create({
         zIndex: 50,
     },
 
-    goBackText: {
+    goBackIcon: {
         color: 'white',
         fontWeight: '600',
         fontSize: 16,

@@ -1,10 +1,10 @@
 import { Tabs } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
-import {TodoProvider} from "@/context/TodoContext";
+import {MovieProvider} from "@/context/MovieContext";
 
 export default function Layout() {
     return (
-        <TodoProvider>
+        <MovieProvider>
             <Tabs>
                 <Tabs.Screen
                     name="index"
@@ -33,7 +33,15 @@ export default function Layout() {
                         headerShown: false,
                     }}
                 />
+
+                <Tabs.Screen
+                    name="PersonalMovies"
+                    options={{
+                        href: null,
+                        headerShown: false,
+                    }}
+                />
             </Tabs>
-        </TodoProvider>
+        </MovieProvider>
     );
 }

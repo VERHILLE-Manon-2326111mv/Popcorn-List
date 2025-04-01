@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
 import { View, Button, Text, StyleSheet, FlatList } from 'react-native';
-import { useTodoContext } from '@/context/TodoContext';
+import { useMovieContext } from '@/context/MovieContext';
 import MovieCard from '@/components/MovieCard';
 
 const PersonalMovies = () => {
-    const { watchList, wishList } = useTodoContext();
+    const { watchList, wishList } = useMovieContext();
     const [showWatchList, setShowWatchList] = useState(true);
 
     const toggleList = () => {
@@ -12,11 +12,11 @@ const PersonalMovies = () => {
     };
 
     const currentList = showWatchList ? watchList : wishList;
-    const listTitle = showWatchList ? 'WatchList' : 'WishList';
+    const listTitle = showWatchList ? 'Liste de films vus' : 'Liste de souhait';
 
     return (
         <View style={styles.container}>
-            <Button title={`Switch to ${showWatchList ? 'WishList' : 'WatchList'}`} onPress={toggleList} />
+            <Button title={`Afficher la ${showWatchList ? 'liste de souhait' : 'liste de films vus'}`} onPress={toggleList} />
             <Text style={styles.title}>{listTitle}</Text>
             <FlatList
                 data={currentList}
