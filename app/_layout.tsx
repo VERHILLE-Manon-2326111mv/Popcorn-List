@@ -26,6 +26,7 @@ export default function Layout() {
                         ),
                     }}
                 />
+
                 <Tabs.Screen
                     name="movie/[id]"
                     options={{

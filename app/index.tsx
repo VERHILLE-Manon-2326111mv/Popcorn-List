@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Text, View, ActivityIndicator, ScrollView, FlatList, StyleSheet } from "react-native";
+import {Button, Text, View, ActivityIndicator, ScrollView, FlatList, StyleSheet, TextStyle} from "react-native";
 import { router } from "expo-router";
 import { fetchMovies } from "@/services/api";
 import useFetch from "@/services/useFetch";
@@ -64,12 +64,12 @@ const styles = StyleSheet.create({
         color: 'white',
         marginTop: 10,
         marginLeft: 10,
-    },
+    } as TextStyle,
     subHeaderText: {
         fontSize: 16,
         color: 'white',
         marginLeft: 10,
-    },
+    } as TextStyle,
     scrollView: {
         flex: 1,
         paddingHorizontal: 5,
@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
         color: 'white',
         marginTop: 5,
         marginBottom: 3,
-    },
+    } as TextStyle,
     flatList: {
         marginTop: 2,
         paddingBottom: 32,
