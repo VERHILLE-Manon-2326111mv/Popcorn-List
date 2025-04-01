@@ -33,6 +33,20 @@ export default function Layout() {
                         headerShown: false,
                     }}
                 />
+                <Tabs.Screen
+                    name="PersonalMovies"
+                    options={{
+                        href: null,
+                        headerShown : false
+                    }}
+                />
+                <Tabs.Screen
+                    name="Statistics"
+                    options={{
+                        href: null,
+                        headerShown : false
+                    }}
+                />
             </Tabs>
         </TodoProvider>
     );

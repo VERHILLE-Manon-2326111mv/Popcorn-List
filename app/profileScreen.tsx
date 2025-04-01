@@ -12,7 +12,7 @@ const ProfileScreen = () => {
                 <Text>📌 Watchlist</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => navigation.navigate('Statistics')}>
-                <Text>📊 Stats</Text>
+                <Text>📊 Statistiques</Text>
             </TouchableOpacity>
         </View>
     );
