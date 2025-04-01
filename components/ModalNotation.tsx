@@ -7,12 +7,12 @@ import {
     TextInput,
     StyleSheet, TextStyle,
 } from "react-native";
-import {useTodoContext} from "@/context/TodoContext";
+import {useMovieContext} from "@/context/MovieContext";
 
 const ModalNotation = ({ visible, onClose, onSubmit, idMovie }) => {
     const [rating, setRating] = useState(-1);
     const [comment, setComment] = useState("");
-    const { setCommentList, setRatingList} = useTodoContext();
+    const { setCommentList, setRatingList} = useMovieContext();
 
     const handleSubmission = () => {
         onSubmit(rating, comment);

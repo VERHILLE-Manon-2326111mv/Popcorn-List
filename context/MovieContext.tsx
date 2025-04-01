@@ -15,9 +15,10 @@ export const MovieProvider = ({ children }: { children: ReactNode }) => {
     const [watchList, setWatchList] = useState<Movie[]>([]);
     const [wishList, setWishList] = useState<Movie[]>([]);
     const [language, setLanguage] = useState("fr");
-
+    const [ratingList, setRatingList] = useState([]);
+    const [commentList, setCommentList] = useState([]);
     return (
-        <MovieContext.Provider value={{ watchList, setWatchList, wishList, setWishList, language, setLanguage }}>
+        <MovieContext.Provider value={{ watchList, setWatchList, wishList, setWishList, language, setLanguage, ratingList, setRatingList, commentList, setCommentList }}>
             {children}
         </MovieContext.Provider>
     );
@@ -26,7 +27,7 @@ export const MovieProvider = ({ children }: { children: ReactNode }) => {
 export const useMovieContext = () => {
     const context = useContext(MovieContext);
     if (!context) {
-        throw new Error('useMovieContext must be used within a TodoProvider');
+        throw new Error('useMovieContext must be used within a MovieProvider');
     }
     return context;
 };

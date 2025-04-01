@@ -13,11 +13,10 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import useFetch from "@/services/useFetch";
 import { fetchMovieDetail } from "@/services/api";
 
-import { useTodoContext } from "@/context/TodoContext";
+import { useMovieContext } from "@/context/MovieContext";
 import {useState} from "react";
 
 import ModalNotation from "@/components/ModalNotation";
-import { useMovieContext } from "@/context/MovieContext";
 
 const MovieInfo = ({ label, value }: MovieInfoProps) => (
     <View style={styles.movieInfoContainer}>
@@ -111,7 +110,7 @@ const Details = () => {
                         </Text>
                     </View>
 
-                    <MovieInfo label="Desciption" value={movie?.overview} />
+                    <MovieInfo label="Synopsie" value={movie?.overview} />
                     {movie?.genres?.length > 0 && (
                         <MovieInfo
                             label="Genres"
