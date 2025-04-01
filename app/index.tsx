@@ -1,37 +1,48 @@
 import React, {useEffect, useState} from 'react';
 import { Button, TextStyle, Text, View, ActivityIndicator, ScrollView, FlatList, StyleSheet } from "react-native";
-import { fetchMovies } from "@/services/api";
+import { fetchMovies, fetchMoviesByGenre } from "@/services/api";
 import useFetch from "@/services/useFetch";
 import MovieCard from "@/components/MovieCard";
 import {useMovieContext} from "@/context/MovieContext";
 
 import SearchBar from '@/components/SearchBar';
+import GenresList from "@/components/GenresList";
 
 export default function Index() {
     const {language} = useMovieContext();
 
     const [searchQuery, setSearchQuery] = useState("");
-    const [isInitialized, setIsInitialized] = useState(false);
+    const [genreId, setGenreId] = useState<number | null>(null);
 
     const {
         data: movies = [],
         loading,
         error,
         refetch: loadMovies
-    } = useFetch(() => fetchMovies({ query: "", language}));
+    } = useFetch(() => fetchMovies({ query: searchQuery, language}));
+
+    const handleGenreChange = (id: number) => {
+        console.log("Genre sélectionné:", id);
+        setGenreId(id);
+    };
+
+    useEffect(() => {
+        if (genreId !== null) {
+            loadMovies(() => fetchMoviesByGenre(genreId));
+        }
+    }, [genreId]);
 
     useEffect(() => {
         const timeoutId = setTimeout(async () => {
             if (searchQuery.trim()) {
-                await loadMovies();
+                await loadMovies(() => fetchMovies({ query: searchQuery, language }));
             } else {
-                loadMovies();
+                loadMovies(() => fetchMovies({ query: "", language }));
             }
         }, 750);
 
         return () => clearTimeout(timeoutId);
     }, [searchQuery]);
-
 
     return (
         <View style={styles.container}>
@@ -60,6 +71,8 @@ export default function Index() {
                             onChangeText={(text: string) => setSearchQuery(text)}
                         />
 
+                        <GenresList onSelectGenre={handleGenreChange} />
+
                         {loading && (
                             <ActivityIndicator
                                 size="large"
@@ -72,7 +85,7 @@ export default function Index() {
                             </Text>
                         )}
 
-                        {(!loading && !error && searchQuery.trim() && (movies ?? []).length > 0 && (
+                        {(!loading && !error && searchQuery.trim() && (movies   ?? []).length > 0 && (
                             <Text style={{color:"#FFFFFF"}}>
                                 Search Result for{' '}
                                 <Text>{searchQuery}</Text>
