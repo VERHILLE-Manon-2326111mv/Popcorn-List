@@ -1,3 +1,4 @@
+
 export const TMDB_CONFIG = {
     BASE_URL: "https://api.themoviedb.org/3",
     API_KEY: process.env.EXPO_PUBLIC_API_TMDB_KEY,
@@ -9,12 +10,14 @@ export const TMDB_CONFIG = {
 
 export const fetchMovies = async ({
                                       query,
+                                      language
                                   }: {
     query: string;
+    language: string;
 }): Promise<Movie[]> => {
     const endpoint = query
-        ? `${TMDB_CONFIG.BASE_URL}/search/movie?query=${encodeURIComponent(query)}&language=fr-FR`
-        : `${TMDB_CONFIG.BASE_URL}/discover/movie?sort_by=popularity.desc&language=fr-FR`;
+        ? `${TMDB_CONFIG.BASE_URL}/search/movie?query=${encodeURIComponent(query)}&language=${language}`
+        : `${TMDB_CONFIG.BASE_URL}/discover/movie?sort_by=popularity.desc&language=${language}`;
 
     const response = await fetch(endpoint, {
         method: "GET",
@@ -29,9 +32,9 @@ export const fetchMovies = async ({
     return data.results;
 };
 
-export const fetchMovieDetail = async (movieId: string): Promise<MovieDetails> => {
+export const fetchMovieDetail = async (movieId: string, language : string): Promise<MovieDetails> => {
     try {
-        const response = await fetch(`${TMDB_CONFIG.BASE_URL}/movie/${movieId}?api_key=${TMDB_CONFIG.API_KEY}&language=fr-FR`, {
+        const response = await fetch(`${TMDB_CONFIG.BASE_URL}/movie/${movieId}?api_key=${TMDB_CONFIG.API_KEY}&language=${language}`, {
                 method: "GET",
                 headers: TMDB_CONFIG.headers,
             }

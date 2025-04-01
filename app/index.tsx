@@ -4,13 +4,16 @@ import { router } from "expo-router";
 import { fetchMovies } from "@/services/api";
 import useFetch from "@/services/useFetch";
 import MovieCard from "@/components/MovieCard";
+import {useMovieContext} from "@/context/MovieContext";
 
 export default function Index() {
+    const {language} = useMovieContext();
+
     const {
         data: movies,
         loading: moviesLoading,
         error: moviesError,
-    } = useFetch(() => fetchMovies({ query: "" }));
+    } = useFetch(() => fetchMovies({ query: "", language}));
 
     return (
         <View style={styles.container}>
@@ -33,7 +36,7 @@ export default function Index() {
                     <Text>Error: {moviesError?.message}</Text>
                 ) : (
                     <View style={styles.moviesContainer}>
-                        <Text style={styles.latestMoviesText}>Latest Movies</Text>
+                        <Text style={styles.latestMoviesText}>Derniers films</Text>
                         <FlatList
                             data={movies}
                             renderItem={({ item }) => <MovieCard {...item} />}
