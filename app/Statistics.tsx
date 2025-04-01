@@ -11,15 +11,56 @@ const Statistics = () => {
             <Text style={styles.title}>Statistiques profil:</Text>
             {
                 <>
-                    <Text style={styles.text}>Durée total
-                    : {watchList.length == 0 ? "Aucun film vue." : watchList.reduce((sum, item) => sum + item.runtime, 0) + " min"}
+                    <Text style={styles.text}>Durée totale : {
+                        ((currentList = watchList) => {
+                            let minutesSansHeure = currentList.reduce((sommeMinute, item) => sommeMinute + item.runtime, 0);
+                            if (minutesSansHeure === 0) {
+                                return "Aucun film vue.";
+                            }
+                            let heures = Math.floor(minutesSansHeure / 60);
+                            let minutes = minutesSansHeure % 60;
+                            return heures +  ' h ' + minutes + ' min';
+                        })()
+                    }
                     </Text>
-                    <Text style={styles.text}>Durée moyenne films vues
-                    : {watchList.length == 0 ? "Aucun film vue." : (watchList.reduce((sum, item) => sum + item.runtime, 0)) / watchList.length + " min"}</Text>
-                    <Text style={styles.text}>Durée total à regarder
-                    : {wishList.length == 0 ? "Aucun film dans la liste de souhaits." : wishList.reduce((sum, item) => sum + item.runtime, 0) + " min"}</Text>
-                    <Text style={styles.text}>Durée moyenne films à regarder
-                    : {wishList.length == 0 ? "Aucun film dans la liste de souhaits." : (wishList.reduce((sum, item) => sum + item.runtime, 0)) / wishList.length + " min"}</Text>
+                    <Text style={styles.text}>Durée moyenne films vues : {
+                        ((currentList = watchList) => {
+                            let minutesSansHeure = currentList.reduce((sommeMinute, item) => sommeMinute + item.runtime, 0);
+                            if (minutesSansHeure === 0) {
+                                return "Aucun film vue.";
+                            }
+                            let moyenne = Math.floor(minutesSansHeure/currentList.length);
+                            let heures = Math.floor(moyenne / 60);
+                            let minutes = moyenne % 60;
+                            return heures +  ' h ' + minutes + ' min';
+                        })()
+                    }
+                    </Text>
+                    <Text style={styles.text}>Durée totale à regarder : {
+                        ((currentList = wishList) => {
+                            let minutesSansHeure = currentList.reduce((sommeMinute, item) => sommeMinute + item.runtime, 0);
+                            if (minutesSansHeure === 0) {
+                                return "Aucun film dans la liste de souhaits.";
+                            }
+                            let heures = Math.floor(minutesSansHeure / 60);
+                            let minutes = minutesSansHeure % 60;
+                            return heures +  ' h ' + minutes + ' min';
+                        })()
+                    }
+                    </Text>
+                    <Text style={styles.text}>Durée moyenne films à regarder : {
+                        ((currentList = wishList) => {
+                            let minutesSansHeure = currentList.reduce((sommeMinute, item) => sommeMinute + item.runtime, 0);
+                            if (minutesSansHeure === 0) {
+                                return "Aucun film vue.";
+                            }
+                            let moyenne = Math.floor(minutesSansHeure/currentList.length);
+                            let heures = Math.floor(moyenne / 60);
+                            let minutes = moyenne % 60;
+                            return heures +  ' h ' + minutes + ' min';
+                        })()
+                    }
+                    </Text>
                 </>
             }
         </ScrollView>
