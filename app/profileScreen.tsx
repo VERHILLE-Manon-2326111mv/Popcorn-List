@@ -26,6 +26,7 @@ const ProfileScreen = () => {
         setModalVisible(false);
     };
 
+
     return (
         <View style={styles.container}>
             <View style={styles.header}>

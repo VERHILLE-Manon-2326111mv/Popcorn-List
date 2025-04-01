@@ -14,6 +14,7 @@ const ModalNotation = ({ visible, onClose, onSubmit, idMovie }) => {
     const [comment, setComment] = useState("");
     const { setCommentList, setRatingList} = useMovieContext();
 
+
     const handleSubmission = () => {
         onSubmit(rating, comment);
 

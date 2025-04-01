@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Button, Text, StyleSheet, FlatList } from 'react-native';
+import {View, Button, Text, StyleSheet, FlatList, TextStyle} from 'react-native';
 import { useMovieContext } from '@/context/MovieContext';
 import MovieCard from '@/components/MovieCard';
 

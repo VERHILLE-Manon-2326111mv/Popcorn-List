@@ -11,6 +11,7 @@ interface MovieContextProps {
 
 const MovieContext = createContext<MovieContextProps | undefined>(undefined);
 
+
 export const MovieProvider = ({ children }: { children: ReactNode }) => {
     const [watchList, setWatchList] = useState<Movie[]>([]);
     const [wishList, setWishList] = useState<Movie[]>([]);

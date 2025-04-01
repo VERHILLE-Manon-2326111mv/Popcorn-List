@@ -13,6 +13,7 @@ const MovieCard = ({
         return '⭐'.repeat(stars) + ' ★ '.repeat(5 - stars);
     };
 
+
     return (
         <Link href={`/movie/${id}`} asChild>
             <TouchableOpacity style={styles.card}>

@@ -6,6 +6,7 @@ import useFetch from "@/services/useFetch";
 import MovieCard from "@/components/MovieCard";
 import {useMovieContext} from "@/context/MovieContext";
 
+
 export default function Index() {
     const {language} = useMovieContext();
 

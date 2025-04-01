@@ -110,6 +110,8 @@ const Details = () => {
                         </Text>
                     </View>
 
+
+
                     <MovieInfo label="Synopsie" value={movie?.overview} />
                     {movie?.genres?.length > 0 && (
                         <MovieInfo
