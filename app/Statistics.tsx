@@ -1,9 +1,9 @@
 import {Text, StyleSheet, ScrollView} from "react-native";
 import React from "react";
-import {useTodoContext} from "@/context/TodoContext";
+import {useMovieContext} from "@/context/MovieContext";
 
 const Statistics = () => {
-    const { watchList, wishList} = useTodoContext();
+    const { watchList, wishList} = useMovieContext();
 
 
     return (
