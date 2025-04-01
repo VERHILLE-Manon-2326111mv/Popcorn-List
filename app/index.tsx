@@ -1,13 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button, Text, View, ActivityIndicator, ScrollView, FlatList, StyleSheet } from "react-native";
-import { fetchMovies } from "@/services/api";
+import { fetchMovies, fetchMoviesByGenre } from "@/services/api";
 import useFetch from "@/services/useFetch";
 import MovieCard from "@/components/MovieCard";
 import SearchBar from '@/components/SearchBar';
+import GenresList from "@/components/GenresList";
 
 export default function Index() {
     const [searchQuery, setSearchQuery] = useState("");
-    const [isInitialized, setIsInitialized] = useState(false);
+    const [genreId, setGenreId] = useState<number | null>(null);
 
     const {
         data: movies = [],
@@ -16,18 +17,28 @@ export default function Index() {
         refetch: loadMovies
     } = useFetch(() => fetchMovies({ query: searchQuery }));
 
+    const handleGenreChange = (id: number) => {
+        console.log("Genre sélectionné:", id);
+        setGenreId(id);
+    };
+
+    useEffect(() => {
+        if (genreId !== null) {
+            loadMovies(() => fetchMoviesByGenre(genreId));
+        }
+    }, [genreId]);
+
     useEffect(() => {
         const timeoutId = setTimeout(async () => {
             if (searchQuery.trim()) {
-                await loadMovies();
+                await loadMovies(() => fetchMovies({ query: searchQuery }));
             } else {
-                loadMovies();
+                loadMovies(() => fetchMovies({ query: "" }));
             }
         }, 750);
 
         return () => clearTimeout(timeoutId);
     }, [searchQuery]);
-
 
     return (
         <View style={styles.container}>
@@ -54,6 +65,8 @@ export default function Index() {
                             onChangeText={(text: string) => setSearchQuery(text)}
                         />
 
+                        <GenresList onSelectGenre={handleGenreChange} />
+
                         {loading && (
                             <ActivityIndicator
                                 size="large"
@@ -66,7 +79,7 @@ export default function Index() {
                             </Text>
                         )}
 
-                        {(!loading && !error && searchQuery.trim() && (movies ?? []).length > 0 && (
+                        {(!loading && !error && searchQuery.trim() && (movies   ?? []).length > 0 && (
                             <Text style={{color:"#FFFFFF"}}>
                                 Search Result for{' '}
                                 <Text>{searchQuery}</Text>
@@ -101,11 +114,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: 'white',
         marginTop: 10,
-        marginLeft: 10,
-    },
-    subHeaderText: {
-        fontSize: 16,
-        color: 'white',
         marginLeft: 10,
     },
     scrollView: {
