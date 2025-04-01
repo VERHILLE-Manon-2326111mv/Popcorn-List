@@ -36,8 +36,10 @@ const Details = () => {
     const [comment, setComment] = useState("");
     const { watchList, setWatchList, wishList, setWishList , ratingList, commentList, language} = useMovieContext();
     const router = useRouter();
+
     const { id } = useLocalSearchParams();
     console.log(id);
+
     const { data: movie, loading } = useFetch(() =>
         fetchMovieDetail(id as string, language), [id]
     );
@@ -67,6 +69,8 @@ const Details = () => {
             }
         }
         console.log(movie)
+        console.log(id)
+
     };
 
     const handleAddToWatchList = () => {

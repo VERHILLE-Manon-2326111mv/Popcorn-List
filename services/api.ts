@@ -52,6 +52,8 @@ export const fetchMovieDetail = async (movieId: string, language : string): Prom
     }
 };
 
+
+
 export const fetchGenres = async (): Promise<Genre[]> => {
     const endpoint = `${TMDB_CONFIG.BASE_URL}/genre/movie/list?language=fr-FR`;
 
