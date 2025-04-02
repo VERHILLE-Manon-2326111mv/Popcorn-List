@@ -1,4 +1,5 @@
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, {createContext, useState, useContext, ReactNode, useEffect} from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 interface MovieContextProps {
     watchList: Movie[];
@@ -24,8 +25,55 @@ export const MovieProvider = ({ children }: { children: ReactNode }) => {
     const [ratingList, setRatingList] = useState([]);
     const [commentList, setCommentList] = useState([]);
 
+    const saveData = async () => {
+        try {
+            const data = JSON.stringify({ watchList, wishList, ratingList, commentList });
+            await AsyncStorage.setItem('movieData', data);
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
+
+    const loadData = async () => {
+        try {
+            const data = await AsyncStorage.getItem('movieData');
+            if (data) {
+                const parsedData = JSON.parse(data);
+                setWatchList(parsedData.watchList || []);
+                setWishList(parsedData.wishList || []);
+                setRatingList(parsedData.ratingList || []);
+                setCommentList(parsedData.commentList || []);
+            }
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
+
+    const resetStorage = async () => {
+        try {
+            await AsyncStorage.removeItem('movieData');
+            setWatchList([]);
+            setWishList([]);
+            setRatingList([]);
+            setCommentList([]);
+        } catch (error) {
+            console.error("Erreur lors de la réinitialisation des données :", error);
+        }
+    };
+
+
+    useEffect(() => {
+        loadData();
+    }, []);
+
+    useEffect(() => {
+        saveData();
+    }, [watchList, wishList, ratingList, commentList]);
+
     return (
-        <MovieContext.Provider value={{ watchList, setWatchList, wishList, setWishList, language, setLanguage, ratingList, setRatingList, commentList, setCommentList}}>
+        <MovieContext.Provider value={{ watchList, setWatchList, wishList, setWishList, language, setLanguage, ratingList, setRatingList, commentList, setCommentList, resetStorage}}>
             {children}
         </MovieContext.Provider>
     );

@@ -5,44 +5,35 @@ import {
     Text,
     TouchableOpacity,
     TextInput,
-    StyleSheet, TextStyle,
+    StyleSheet,
 } from "react-native";
-import {useMovieContext} from "@/context/MovieContext";
+import { useMovieContext } from "@/context/MovieContext";
 
-const ModalNotation = ({ visible, onClose, onSubmit, idMovie }) => {
+const ModalNotation = ({ visible, onClose, idMovie }) => {
     const [rating, setRating] = useState(-1);
     const [comment, setComment] = useState("");
-    const { setCommentList, setRatingList} = useMovieContext();
-
+    const { setCommentList, setRatingList } = useMovieContext();
 
     const handleSubmission = () => {
-        onSubmit(rating, comment);
-
-        if (rating != -1) {
+        if (rating !== -1) {
             setRatingList((prevList) => {
-                const existingRating = prevList.find(item => item.id === idMovie);
-                if (existingRating) {
-                    return prevList.map(item =>
-                        item.id === idMovie ? {...item, rating} : item
-                    );
-                } else if (rating !== -1) {
-                    return [...prevList, {id: idMovie, rating}];
-                }
-                return prevList;
+                const updatedList = prevList.map(item =>
+                    item.id === idMovie ? { ...item, rating } : item
+                );
+                return updatedList.some(item => item.id === idMovie)
+                    ? updatedList
+                    : [...updatedList, { id: idMovie, rating }];
             });
         }
 
-        if (comment != "") {
+        if (comment.trim() !== "") {
             setCommentList((prevList) => {
-                const existingComment = prevList.find(item => item.id === idMovie);
-                if (existingComment) {
-                    return prevList.map(item =>
-                        item.id === idMovie ? {...item, comment} : item
-                    );
-                } else if (comment.trim() !== "") {
-                    return [...prevList, {id: idMovie, comment}];
-                }
-                return prevList;
+                const updatedList = prevList.map(item =>
+                    item.id === idMovie ? { ...item, comment } : item
+                );
+                return updatedList.some(item => item.id === idMovie)
+                    ? updatedList
+                    : [...updatedList, { id: idMovie, comment }];
             });
         }
 
@@ -106,7 +97,7 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 18,
         fontWeight: 'bold',
-    } as TextStyle,
+    },
     starContainer: {
         flexDirection: 'row',
         marginVertical: 10,

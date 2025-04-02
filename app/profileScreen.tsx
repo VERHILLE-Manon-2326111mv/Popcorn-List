@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Modal, FlatList } from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity, Modal, FlatList, Alert} from 'react-native';
 import { Link } from 'expo-router';
 import { useMovieContext } from "@/context/MovieContext";
 import { Ionicons } from '@expo/vector-icons';
@@ -26,6 +26,20 @@ const ProfileScreen = () => {
         setModalVisible(false);
     };
 
+    const {resetStorage} = useMovieContext();
+    const handleResetStorage = () => {
+        Alert.alert(
+            "Réinitialisation",
+            "Voulez-vous vraiment tout effacer ?",
+            [
+                { text: "Annuler", style: "cancel" },
+                {
+                    text: "Confirmer",
+                    onPress: () => resetStorage()
+                }
+            ]
+        );
+    }
 
     return (
         <View style={styles.container}>
@@ -60,7 +74,13 @@ const ProfileScreen = () => {
                         <Text style={styles.languageName}>{currentLanguage.name}</Text>
                         <Ionicons name="chevron-down" size={20} color="#666" />
                     </View>
+
                 </TouchableOpacity>
+
+                <TouchableOpacity onPress={handleResetStorage} style={styles.resetButton}>
+                    <Text style={styles.buttonText}>Réinitialiser les données</Text>
+                </TouchableOpacity>
+
             </View>
 
             <Modal
@@ -212,7 +232,22 @@ const styles = StyleSheet.create({
         color: 'white',
         fontWeight: 'bold',
         fontSize: 16,
-    }
+    },
+    resetButton: {
+        backgroundColor: '#FF6347',
+        padding: 12,
+        borderRadius: 8,
+        marginTop: 15,
+        alignItems: 'center',
+    },
+    buttonText: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
+
+
+
 });
 
 export default ProfileScreen;
