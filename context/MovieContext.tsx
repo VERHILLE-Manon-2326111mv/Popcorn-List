@@ -7,6 +7,11 @@ interface MovieContextProps {
     setWishList: React.Dispatch<React.SetStateAction<Movie[]>>;
     language: string;
     setLanguage: React.Dispatch<React.SetStateAction<string>>;
+    ratingList: any[];
+    setRatingList: React.Dispatch<React.SetStateAction<any[]>>;
+    commentList: any[];
+    setCommentList: React.Dispatch<React.SetStateAction<any[]>>;
+
 }
 
 const MovieContext = createContext<MovieContextProps | undefined>(undefined);
@@ -18,8 +23,9 @@ export const MovieProvider = ({ children }: { children: ReactNode }) => {
     const [language, setLanguage] = useState("fr");
     const [ratingList, setRatingList] = useState([]);
     const [commentList, setCommentList] = useState([]);
+
     return (
-        <MovieContext.Provider value={{ watchList, setWatchList, wishList, setWishList, language, setLanguage, ratingList, setRatingList, commentList, setCommentList }}>
+        <MovieContext.Provider value={{ watchList, setWatchList, wishList, setWishList, language, setLanguage, ratingList, setRatingList, commentList, setCommentList}}>
             {children}
         </MovieContext.Provider>
     );

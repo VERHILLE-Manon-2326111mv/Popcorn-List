@@ -49,8 +49,8 @@ export const fetchGenres = async (): Promise<Genre[]> => {
     return data.genres;
 };
 
-export const fetchMoviesByGenre = async (genreId: number): Promise<Movie[]> => {
-    const endpoint = `${TMDB_CONFIG.BASE_URL}/discover/movie?with_genres=${genreId}&sort_by=popularity.desc&language=fr-FR`;
+export const fetchMoviesByGenre = async (genreId: number, language : string): Promise<Movie[]> => {
+    const endpoint = `${TMDB_CONFIG.BASE_URL}/discover/movie?with_genres=${genreId}&sort_by=popularity.desc&language=${language}`;
 
     const response = await fetch(endpoint, {
         method: "GET",

@@ -10,14 +10,13 @@ import {
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import data_profile from '@/data_profile.json';
-
-console.log(data_profile);
+import { Ionicons } from "@expo/vector-icons";
 
 import useFetch from "@/services/useFetch";
 import { fetchMovieDetail } from "@/services/api";
 
 import { useMovieContext } from "@/context/MovieContext";
-import {useState} from "react";
+import React, {useState} from "react";
 
 import ModalNotation from "@/components/ModalNotation";
 
@@ -170,13 +169,23 @@ const Details = () => {
 
             <View style={styles.buttonContainer}>
                 <TouchableOpacity style={styles.rateButton} onPress={() => setModalVisible(true)}>
-                    <Text style={styles.buttonText}>⭐ Noter</Text>
+                    <Text style={styles.buttonText}>
+                        <Ionicons name="star" size={20} color="yellow" />  Noter
+                    </Text>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.actionButton} onPress={handleAddToWishList}>
-                    <Text style={styles.buttonText}>{isInWishList ? "❤️" : "🖤"}</Text>
+                    <Ionicons
+                        name={isInWishList ? "heart" : "heart-outline"}
+                        size={24}
+                        color="white"
+                    />
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.actionButton} onPress={handleAddToWatchList}>
-                    <Text style={styles.buttonText}>{isInWatchList ? "👁" : "❌"}</Text>
+                    <Ionicons
+                        name={isInWatchList ? "eye" : "eye-off"}
+                        size={24}
+                        color="white"
+                    />
                 </TouchableOpacity>
             </View>
 
@@ -184,8 +193,7 @@ const Details = () => {
                 style={styles.goBackButton}
                 onPress={router.back}
             >
-
-                <Text style={styles.goBackIcon}>👈🏻</Text>
+                <Text style={styles.goBackIcon}><Ionicons name="chevron-back" size={24} color={ "white"} /></Text>
             </TouchableOpacity>
 
             <ModalNotation
@@ -304,8 +312,10 @@ const styles = StyleSheet.create({
         padding: 14,
         flexDirection: 'row',
         alignItems: 'center',
-        justifyContent: 'flex-start',
         zIndex: 50,
+        width: 40,
+        height: 40,
+        justifyContent: 'center',
     },
 
     goBackIcon: {

@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import { Button, TextStyle, Text, View, ActivityIndicator, ScrollView, FlatList, StyleSheet } from "react-native";
+import { Button, TextStyle, Text, View, ActivityIndicator, ScrollView, FlatList, StyleSheet, SafeAreaView } from "react-native";
 import { fetchMovies, fetchMoviesByGenre } from "@/services/api";
 import useFetch from "@/services/useFetch";
 import MovieCard from "@/components/MovieCard";
@@ -28,7 +28,7 @@ export default function Index() {
 
     useEffect(() => {
         if (genreId !== null) {
-            loadMovies(() => fetchMoviesByGenre(genreId));
+            loadMovies(() => fetchMoviesByGenre(genreId, language));
         }
     }, [genreId]);
 
@@ -45,10 +45,10 @@ export default function Index() {
     }, [searchQuery]);
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.headerText}>Bienvenue sur PopCornList 🍿</Text>
-            <Text style={styles.subHeaderText}>📌 Dernières sorties</Text>
-            <Text style={styles.subHeaderText}>🔍 Rechercher un film</Text>
+        <SafeAreaView style={styles.container}>
+            <View style={styles.header}>
+                <Text style={styles.headerText}>PopCornList 🍿</Text>
+            </View>
 
             <ScrollView
                 style={styles.scrollView}
@@ -58,7 +58,7 @@ export default function Index() {
                 {loading ? (
                     <ActivityIndicator
                         size="large"
-                        color="#0000ff"
+                        color="#FF6347"
                         style={styles.activityIndicator}
                     />
                 ) : error ? (
@@ -76,7 +76,7 @@ export default function Index() {
                         {loading && (
                             <ActivityIndicator
                                 size="large"
-                                color="#0000FF"/>
+                                color="#FF6347"/>
                         )}
 
                         {error && (
@@ -86,9 +86,9 @@ export default function Index() {
                         )}
 
                         {(!loading && !error && searchQuery.trim() && (movies   ?? []).length > 0 && (
-                            <Text style={{color:"#FFFFFF"}}>
-                                Search Result for{' '}
-                                <Text>{searchQuery}</Text>
+                            <Text style={styles.searchResultText}>
+                                Résultats pour{' '}
+                                <Text style={styles.queryText}>"{searchQuery}"</Text>
                             </Text>
                         )) || (
                             <Text style={styles.latestMoviesText}>📌 Dernières sorties</Text>
@@ -106,7 +106,7 @@ export default function Index() {
                     </View>
                 )}
             </ScrollView>
-        </View>
+        </SafeAreaView>
     );
 }
 
@@ -115,13 +115,20 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#121212',
     },
+    header: {
+        backgroundColor: '#1E1E1E',
+        paddingVertical: 15,
+        paddingHorizontal: 20,
+        borderBottomWidth: 1,
+        borderBottomColor: '#2a2a2a',
+        marginBottom: 10,
+    },
     headerText: {
-        fontSize: 20,
-        fontWeight: 'bold',
+        fontSize: 28,
+        fontWeight: '700',
         color: 'white',
-        marginTop: 10,
-        marginLeft: 10,
-    } as TextStyle,
+        textAlign: 'center',
+    },
     subHeaderText: {
         fontSize: 16,
         color: 'white',
@@ -129,35 +136,46 @@ const styles = StyleSheet.create({
     } as TextStyle,
     scrollView: {
         flex: 1,
-        paddingHorizontal: 5,
+        paddingHorizontal: 12,
     },
     scrollViewContent: {
         minHeight: '100%',
-        paddingBottom: 10,
+        paddingBottom: 20,
     },
     activityIndicator: {
-        marginTop: 10,
+        marginTop: 20,
         alignSelf: 'center',
     },
     moviesContainer: {
         flex: 1,
         marginTop: 5,
     },
+    searchResultText: {
+        fontSize: 16,
+        color: '#FFFFFF',
+        marginVertical: 10,
+        paddingHorizontal: 5,
+    },
+    queryText: {
+        fontWeight: 'bold',
+        color: '#FF6347',
+    },
     latestMoviesText: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: 'bold',
         color: 'white',
-        marginTop: 5,
-        marginBottom: 3,
-    } as TextStyle,
+        marginTop: 10,
+        marginBottom: 10,
+        paddingHorizontal: 5,
+    },
     flatList: {
-        marginTop: 2,
+        marginTop: 5,
         paddingBottom: 32,
     },
     flatListColumn: {
         justifyContent: 'flex-start',
         gap: 20,
         paddingRight: 5,
-        marginBottom: 10,
+        marginBottom: 15,
     },
 });

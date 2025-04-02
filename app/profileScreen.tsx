@@ -34,11 +34,14 @@ const ProfileScreen = () => {
             </View>
 
             <View style={styles.menuSection}>
-                <Link href="/PersonalMovies" style={styles.menuItem}>
-                    <Text style={styles.menuText}>🎥 Mes films vus</Text>
+                <Link href="/PersonalMovies" style={styles.menuItem} >
+                    <Ionicons name="bookmark" size={20} color={ "#FF6347" } />
+                    <Text style={styles.menuText}>   À voir</Text>
+
                 </Link>
-                <Link href="/PersonalMovies" style={styles.menuItem}>
-                    <Text style={styles.menuText}>📌 Watchlist</Text>
+                <Link href="/PersonalMovies" style={styles.menuItem} >
+                    <Ionicons name="checkmark-circle" size={20} color={"#FF6347"} />
+                    <Text style={styles.menuText}>   Films vus</Text>
                 </Link>
                 <Link href="/Statistics" style={styles.menuItem}>
                     <Text style={styles.menuText}>📊 Stats</Text>
