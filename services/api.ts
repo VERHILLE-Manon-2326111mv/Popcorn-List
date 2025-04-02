@@ -1,3 +1,4 @@
+import {Genre} from "@/type/Genre";
 
 export const TMDB_CONFIG = {
     BASE_URL: "https://api.themoviedb.org/3",
@@ -26,6 +27,38 @@ export const fetchMovies = async ({
 
     if (!response.ok) {
         throw new Error(`Failed to fetch movies: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.results;
+};
+
+export const fetchGenres = async (): Promise<Genre[]> => {
+    const endpoint = `${TMDB_CONFIG.BASE_URL}/genre/movie/list?language=fr-FR`;
+
+    const response = await fetch(endpoint, {
+        method: "GET",
+        headers: TMDB_CONFIG.headers,
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch genres: ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.genres;
+};
+
+export const fetchMoviesByGenre = async (genreId: number): Promise<Movie[]> => {
+    const endpoint = `${TMDB_CONFIG.BASE_URL}/discover/movie?with_genres=${genreId}&sort_by=popularity.desc&language=fr-FR`;
+
+    const response = await fetch(endpoint, {
+        method: "GET",
+        headers: TMDB_CONFIG.headers,
+    });
+
+    if (!response.ok) {
+        throw new Error(`Failed to fetch movies by genre: ${response.statusText}`);
     }
 
     const data = await response.json();

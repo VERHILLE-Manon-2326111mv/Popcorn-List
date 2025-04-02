@@ -1,20 +1,48 @@
-import React from 'react';
-import {Button, Text, View, ActivityIndicator, ScrollView, FlatList, StyleSheet, TextStyle} from "react-native";
-import { router } from "expo-router";
-import { fetchMovies } from "@/services/api";
+import React, {useEffect, useState} from 'react';
+import { Button, TextStyle, Text, View, ActivityIndicator, ScrollView, FlatList, StyleSheet } from "react-native";
+import { fetchMovies, fetchMoviesByGenre } from "@/services/api";
 import useFetch from "@/services/useFetch";
 import MovieCard from "@/components/MovieCard";
 import {useMovieContext} from "@/context/MovieContext";
 
+import SearchBar from '@/components/SearchBar';
+import GenresList from "@/components/GenreList";
 
 export default function Index() {
     const {language} = useMovieContext();
 
+    const [searchQuery, setSearchQuery] = useState("");
+    const [genreId, setGenreId] = useState<number | null>(null);
+
     const {
-        data: movies,
-        loading: moviesLoading,
-        error: moviesError,
-    } = useFetch(() => fetchMovies({ query: "", language}));
+        data: movies = [],
+        loading,
+        error,
+        refetch: loadMovies
+    } = useFetch(() => fetchMovies({ query: searchQuery, language}));
+
+    const handleGenreChange = (id: number) => {
+        console.log("Genre sélectionné:", id);
+        setGenreId(id);
+    };
+
+    useEffect(() => {
+        if (genreId !== null) {
+            loadMovies(() => fetchMoviesByGenre(genreId));
+        }
+    }, [genreId]);
+
+    useEffect(() => {
+        const timeoutId = setTimeout(async () => {
+            if (searchQuery.trim()) {
+                await loadMovies(() => fetchMovies({ query: searchQuery, language }));
+            } else {
+                loadMovies(() => fetchMovies({ query: "", language }));
+            }
+        }, 750);
+
+        return () => clearTimeout(timeoutId);
+    }, [searchQuery]);
 
     return (
         <View style={styles.container}>
@@ -27,17 +55,45 @@ export default function Index() {
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={styles.scrollViewContent}
             >
-                {moviesLoading ? (
+                {loading ? (
                     <ActivityIndicator
                         size="large"
                         color="#0000ff"
                         style={styles.activityIndicator}
                     />
-                ) : moviesError ? (
-                    <Text>Error: {moviesError?.message}</Text>
+                ) : error ? (
+                    <Text>Error: {error?.message}</Text>
                 ) : (
                     <View style={styles.moviesContainer}>
-                        <Text style={styles.latestMoviesText}>Derniers films</Text>
+                        <SearchBar
+                            placeholder="🔍 Rechercher un film"
+                            value={searchQuery}
+                            onChangeText={(text: string) => setSearchQuery(text)}
+                        />
+
+                        <GenresList onSelectGenre={handleGenreChange} />
+
+                        {loading && (
+                            <ActivityIndicator
+                                size="large"
+                                color="#0000FF"/>
+                        )}
+
+                        {error && (
+                            <Text>
+                                Error: {error ?? "Une erreur inconnue s'est produite"}
+                            </Text>
+                        )}
+
+                        {(!loading && !error && searchQuery.trim() && (movies   ?? []).length > 0 && (
+                            <Text style={{color:"#FFFFFF"}}>
+                                Search Result for{' '}
+                                <Text>{searchQuery}</Text>
+                            </Text>
+                        )) || (
+                            <Text style={styles.latestMoviesText}>📌 Dernières sorties</Text>
+                        )}
+
                         <FlatList
                             data={movies}
                             renderItem={({ item }) => <MovieCard {...item} />}
