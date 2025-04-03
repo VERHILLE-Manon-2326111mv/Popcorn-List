@@ -58,7 +58,8 @@ const ProfileScreen = () => {
                     <Text style={styles.menuText}>   Films vus</Text>
                 </Link>
                 <Link href="/Statistics" style={styles.menuItem}>
-                    <Text style={styles.menuText}>📊 Stats</Text>
+                    <Ionicons name="stats-chart" size={20} color={ "#FF6347" } />
+                    <Text style={styles.menuText}>   Stats</Text>
                 </Link>
             </View>
 
