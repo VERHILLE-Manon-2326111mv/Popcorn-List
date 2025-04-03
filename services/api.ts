@@ -11,14 +11,24 @@ export const TMDB_CONFIG = {
 
 export const fetchMovies = async ({
                                       query,
-                                      language
+                                      language,
+                                      genreId
                                   }: {
     query: string;
     language: string;
+    genreId?: number | null;
 }): Promise<Movie[]> => {
-    const endpoint = query
-        ? `${TMDB_CONFIG.BASE_URL}/search/movie?query=${encodeURIComponent(query)}&language=${language}`
-        : `${TMDB_CONFIG.BASE_URL}/discover/movie?sort_by=popularity.desc&language=${language}`;
+    let endpoint;
+
+    if (genreId !== null) {
+        endpoint = query
+            ? `${TMDB_CONFIG.BASE_URL}/search/movie?query=${encodeURIComponent(query)}&language=${language}&with_genres=${genreId}`
+            : `${TMDB_CONFIG.BASE_URL}/discover/movie?with_genres=${genreId}&sort_by=popularity.desc&language=${language}`;
+    } else {
+        endpoint = query
+            ? `${TMDB_CONFIG.BASE_URL}/search/movie?query=${encodeURIComponent(query)}&language=${language}`
+            : `${TMDB_CONFIG.BASE_URL}/discover/movie?sort_by=popularity.desc&language=${language}`;
+    }
 
     const response = await fetch(endpoint, {
         method: "GET",
@@ -47,22 +57,6 @@ export const fetchGenres = async (): Promise<Genre[]> => {
 
     const data = await response.json();
     return data.genres;
-};
-
-export const fetchMoviesByGenre = async (genreId: number, language : string): Promise<Movie[]> => {
-    const endpoint = `${TMDB_CONFIG.BASE_URL}/discover/movie?with_genres=${genreId}&sort_by=popularity.desc&language=${language}`;
-
-    const response = await fetch(endpoint, {
-        method: "GET",
-        headers: TMDB_CONFIG.headers,
-    });
-
-    if (!response.ok) {
-        throw new Error(`Failed to fetch movies by genre: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    return data.results;
 };
 
 export const fetchMovieDetail = async (movieId: string, language : string): Promise<MovieDetails> => {

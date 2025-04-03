@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
-import { Button, TextStyle, Text, View, ActivityIndicator, ScrollView, FlatList, StyleSheet, SafeAreaView } from "react-native";
-import { fetchMovies, fetchMoviesByGenre } from "@/services/api";
+import { TextStyle, Text, View, ActivityIndicator, ScrollView, FlatList, StyleSheet, SafeAreaView } from "react-native";
+import { fetchMovies } from "@/services/api";
 import useFetch from "@/services/useFetch";
 import MovieCard from "@/components/MovieCard";
 import {useMovieContext} from "@/context/MovieContext";
@@ -19,30 +19,20 @@ export default function Index() {
         loading,
         error,
         refetch: loadMovies
-    } = useFetch(() => fetchMovies({ query: searchQuery, language}));
+    } = useFetch(() => fetchMovies({ query: searchQuery, language, genreId}));
 
     const handleGenreChange = (id: number) => {
-        console.log("Genre sélectionné:", id);
         setGenreId(id);
     };
 
     useEffect(() => {
-        if (genreId !== null) {
-            loadMovies(() => fetchMoviesByGenre(genreId, language));
-        }
-    }, [genreId]);
-
-    useEffect(() => {
         const timeoutId = setTimeout(async () => {
-            if (searchQuery.trim()) {
-                await loadMovies(() => fetchMovies({ query: searchQuery, language }));
-            } else {
-                loadMovies(() => fetchMovies({ query: "", language }));
-            }
+            await loadMovies(() => fetchMovies({ query: searchQuery, language, genreId }));
         }, 750);
 
         return () => clearTimeout(timeoutId);
-    }, [searchQuery]);
+    }, [searchQuery, genreId, language]);
+
 
     return (
         <SafeAreaView style={styles.container}>
