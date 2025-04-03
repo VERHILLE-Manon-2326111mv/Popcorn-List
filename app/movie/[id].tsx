@@ -305,17 +305,16 @@ const styles = StyleSheet.create({
     },
     goBackButton: {
         position: 'absolute',
-        top: 20,
-        left: 20,
+        top: 15,
+        left: 15,
         backgroundColor: '#FF6347',
         borderRadius: 50,
-        padding: 14,
-        flexDirection: 'row',
-        alignItems: 'center',
-        zIndex: 50,
         width: 40,
         height: 40,
+        alignItems: 'center',
         justifyContent: 'center',
+        zIndex: 10,
+
     },
 
     goBackIcon: {
