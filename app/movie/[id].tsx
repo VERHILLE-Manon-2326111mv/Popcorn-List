@@ -175,7 +175,7 @@ const Details = () => {
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.actionButton} onPress={handleAddToWishList}>
                     <Ionicons
-                        name={isInWishList ? "heart" : "heart-outline"}
+                        name={isInWishList ? "bookmark" : "bookmark-outline"}
                         size={24}
                         color="white"
                     />
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
     movieTitle: {
         color: 'white',
         fontWeight: 'bold',
-        fontSize: 24,
+        color: 'white',
     },
     movieRuntimeContainer: {
         flexDirection: 'row',
